@@ -5,3 +5,34 @@
 */
 
 import inquirer from 'inquirer';
+import qr from 'qr-image';
+import fs from 'fs';
+
+
+inquirer
+    .prompt([
+        {
+            type: "input",
+            name: "URL",
+            message: "please enter URL"
+        }
+    ])
+    .then((answers) => {
+        var url = answers["URL"]
+
+        var urlImage = qr.image(url)
+        urlImage.pipe(fs.createWriteStream("qr.png"))
+
+        console.log(url)
+        fs.writeFile("url.txt", url, (err) => {
+            if (err) throw err;
+            console.log("File saved");
+        })
+    })
+    .catch((error) => {
+        if (error.isTtyError) {
+            // Prompt couldn't be rendered in the current environment
+        } else {
+            // Something else went wrong
+        }
+    });
